@@ -10,19 +10,6 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Create Room</h1>
 
-    <!-- Message Success -->
-    @if(session()->has('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Success:">
-            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM6.354 11.646a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L6 10.293l5.646-5.647a.5.5 0 1 1 .708.708l-6 6z" />
-        </svg>
-        <strong>Success:</strong> {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    @endif
-
     <!-- Message Error -->
     @if(session()->has('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -49,9 +36,7 @@
     </div>
     @endif
 
-
-
-    <form action="{{url('room/save')}}" method="POST" autocomplete="off">
+    <form action="{{url('room/save')}}" method="POST" autocomplete="off" enctype="multipart/form-data">
         @csrf
 
         <div class="row">
@@ -66,7 +51,9 @@
                             <label for="room_name" class="col-sm-2 col-form-label">Room Name <span class="text-danger">*</span></label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="room_name" id="room_name" autofocus>
-
+                                @error('room_name')
+                                <div class="text-sm text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -74,6 +61,9 @@
                             <label for="room_desc" class="col-sm-2 col-form-label">Room Description</label>
                             <div class="col-sm-9">
                                 <textarea class="form-control" name="room_desc" id="room_desc"></textarea>
+                                @error('room_desc')
+                                <div class="text-sm text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -85,6 +75,9 @@
                                     <option value="0">Unavilable</option>
                                 </select>
                             </div>
+                            <!-- @error('room_status')
+                            <div class="text-sm text-danger">{{$message}}</div>
+                            @enderror -->
                         </div>
 
                         <div class="form-group row">
@@ -96,6 +89,9 @@
                                     <option value="{{$rt->room_type_id}}">{{$rt->room_type_name}}</option>
                                     @endforeach
                                 </select>
+                                @error('room_type_id')
+                                <div class="text-sm text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -106,19 +102,23 @@
                 <!-- Roitation Utilities -->
                 <div class="card" style="min-height: 335px;height: auto;">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Attachment</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Attachment (Select file image below 2 MB)</h6>
                     </div>
                     <div class="card-body text-center">
 
                         <div class="form-group row">
                             <div class="col-sm-10">
                                 <div>
-                                    <input class="form-control form-control-lg" name="room_photo" id="room_photo" type="file">
+                                    <input class="form-control form-control-lg" name="room_photo" id="room_photo" type="file" accept="image/*" onchange="previewImg(event)">
+                                </div>
+                                <div class="m-2">
+                                    <img src="" alt="" id="img" name="img" width="250">
                                 </div>
                             </div>
-
+                            @error('room_photo')
+                                <div class="text-sm text-danger">{{$message}}</div>
+                            @enderror
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -142,4 +142,13 @@
 
 </div>
 <!-- /.container-fluid -->
+@endsection
+
+@section('myjs')
+    <script type="text/javascript">
+            function previewImg(evt){
+                let img = document.getElementById("img");
+                img.src = URL.createObjectURL(evt.target.files[0]);
+            }
+    </script>
 @endsection

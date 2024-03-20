@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\RoomType;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -33,16 +34,34 @@ class RoomController extends Controller
 
     public function save(Request $rep)
     {
+        $rep->validate([
+            'room_name' => 'required|unique:rooms|max:191',
+            //'room_status' => 'required',
+            'room_desc' => 'required',
+            'room_type_id' => 'required',
+            'room_photo' => 'required'
+        ],
+            [
+                'room_name.required' => 'Please input the field room name!',
+                'room_desc.required' => 'Please input the field room description!',
+                'room_type_id.required' => 'Please input the field room type ID!',
+                'room_photo.required' => 'Please select photo from your browse!',
+            ]
+    );
+
+    if($rep->room_photo){
+        $data['room_photo'] = $rep->file('room_photo')->store('uploads/rooms/', 'custom');
+    }
         try {
             // Extracting data from the request
             $data = array(
                 'room_name' => $rep->room_name,
                 'room_desc' => $rep->room_desc,
                 'room_status' => $rep->room_status,
+                'room_photo' => $data['room_photo'],
                 'room_type_id' => $rep->room_type_id,
             );
 
-            // Check if the room_name already exists in the database
             $existingRoom = DB::table('rooms')->where('room_name', $data['room_name'])->first();
 
             if ($existingRoom) {
@@ -52,9 +71,9 @@ class RoomController extends Controller
             $i = DB::table('rooms')->insert($data);
 
             if ($i) {
-                return redirect('room/create')->with('success', 'Data has been inserted.');
+                return redirect('/room')->with('success', 'Data has been inserted.');
             }
-        } catch (Exception $e) {
+        } catch (QueryException $e) {
             
             return back()->with('error', 'Insert data went wrong!');
         }
