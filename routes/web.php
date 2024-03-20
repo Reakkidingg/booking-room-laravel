@@ -11,4 +11,5 @@ Route::controller(RoomController::class)->group(function(){
     Route::get('room', 'index');
     Route::get('room/create', 'create');
     Route::post('room/save', 'save');
+    Route::get('room/delete/{id}', 'delete')->name('room.delete');
 });

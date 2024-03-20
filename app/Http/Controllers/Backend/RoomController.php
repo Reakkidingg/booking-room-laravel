@@ -78,4 +78,12 @@ class RoomController extends Controller
             return back()->with('error', 'Insert data went wrong!');
         }
     }
+
+    //Delete Function
+    public function delete($id){
+        $i = DB::table('rooms')
+        ->where('room_id', $id)
+        ->delete();
+        return redirect('room')->with('success', 'Data has been deleted.');
+    }
 }
