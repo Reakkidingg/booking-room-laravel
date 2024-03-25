@@ -15,4 +15,6 @@ class RoomType extends Model
         'room_type_name',
         'price'
     ];
+
+
 }

@@ -61,9 +61,16 @@
                             <td>{{$item->room_desc}}</td>
                             <td>{{$item->room_type_name}}</td>
                             <td>
-                                <a href="" class="btn btn-primary"><i class="fas fa-edit"></i></a>&nbsp;
+                                <!-- <a href="" class="btn btn-primary"><i class="fas fa-edit"></i></a>&nbsp; -->
+                                <!-- <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1"><i class="fas fa-edit"></i></a> -->
+                                <a href="{{url('room/edit/'.$item->room_id)}}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                                 <a href="" class="btn btn-info"><i class="fas fa-eye"></i></a>&nbsp;
-                                <a href="{{route('room.delete', $item->room_id)}}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                                <!-- <a href="{{route('room.delete', $item->room_id)}}" class="btn btn-danger"></a> -->
+
+                                <!-- Delete Modal -->
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </td>
                         </tr>
                         @endforeach
@@ -74,7 +81,52 @@
             </div>
         </div>
     </div>
-
 </div>
+
+
+<!-- Modal Delete-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Deletion Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                Are you sure for delete this record?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="{{route('room.delete', $item->room_id)}}" class="btn btn-primary">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit-->
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Updation Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Include link edit here -->
+                <
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- /.container-fluid -->
 @endsection

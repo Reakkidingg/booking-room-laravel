@@ -8,7 +8,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Create Room</h1>
+    <h1 class="h3 mb-2 text-gray-800">Update Room</h1>
 
     <!-- Message Error -->
     @if(session()->has('error'))
@@ -36,7 +36,7 @@
     </div>
     @endif
 
-    <form action="{{url('room/save')}}" method="POST" autocomplete="off" enctype="multipart/form-data">
+    <form action="{{url('room/update')}}" method="POST" autocomplete="off" enctype="multipart/form-data">
         @csrf
 
         <div class="row">
@@ -50,7 +50,7 @@
                         <div class="form-group row">
                             <label for="room_name" class="col-sm-2 col-form-label">Room Name <span class="text-danger">*</span></label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="room_name" id="room_name" value="{{old('room_name', request()->input('room_name'))}}" autofocus>
+                                <input type="text" class="form-control" name="room_name" id="room_name" value="{{$rooms->room_name}}" autofocus>
                                 @error('room_name')
                                 <div class="text-sm text-danger">{{$message}}</div>
                                 @enderror
@@ -60,7 +60,7 @@
                         <div class="form-group row">
                             <label for="room_desc" class="col-sm-2 col-form-label">Room Description</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control" name="room_desc" id="room_desc">{{old('room_desc', request()->input('room_desc'))}}</textarea>
+                                <textarea class="form-control" name="room_desc" id="room_desc">{{$rooms->room_desc}}</textarea>
                                 @error('room_desc')
                                 <div class="text-sm text-danger">{{$message}}</div>
                                 @enderror
@@ -71,8 +71,8 @@
                             <label for="room_status" class="col-sm-2 col-form-label">Status</label>
                             <div class="col-sm-9">
                                 <select class="form-select form-control" id="room_status" name="room_status">
-                                    <option value="1">Aailable</option>
-                                    <option value="0">Unavilable</option>
+                                    <option value="1" {{$rooms->room_status == '1' ?  'selected' : ''}}>Aailable</option>
+                                    <option value="0" {{$rooms->room_status == '0' ?  'selected' : ''}}>Unavilable</option>
                                 </select>
                             </div>
                             <!-- @error('room_status')
@@ -84,9 +84,8 @@
                             <label for="room_type_id" class="col-sm-2 col-form-label">Room Type</label>
                             <div class="col-sm-9">
                                 <select class="form-select form-control" id="room_type_id" name="room_type_id">
-                                    <option value="">---Choose RoomType---</option>
                                     @foreach($room_types as $rt)
-                                    <option value="{{$rt->room_type_id}}">{{$rt->room_type_name}}</option>
+                                    <option value="{{$rt->room_type_id}}" {{$rooms->room_type_id == $rt->room_type_id ? 'selected' : ''}}>{{$rt->room_type_name}}</option>
                                     @endforeach
                                 </select>
                                 @error('room_type_id')
@@ -94,7 +93,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -113,7 +112,7 @@
                                     <input class="form-control form-control-lg" name="room_photo" id="room_photo" type="file" accept="image/*" onchange="previewImg(event)">
                                 </div>
                                 <div>
-                                    <img src="" alt="" id="img" name="img" width="250">
+                                    <img src="{{asset($rooms->room_photo)}}" alt="" id="img" name="img" width="250">
                                 </div>
                                 @error('room_photo')
                                 <div class="text-sm text-danger">{{$message}}</div>
@@ -124,20 +123,26 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-11"></div>
-            <div class="col-sm-1">
-                {{-- <button class="btn btn-success">Save</button> --}}
-
-                <button class="btn btn-success btn-icon-split">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span class="text">Save</span>
-                </button>
-
+        <div class="row d-flex justify-content-end">
+            <div class="col-sm-2">
+                <div class="d-flex">
+                <a href="{{url('room')}}" class="btn btn-info btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-left"></i>
+                        </span>
+                        <span class="text">Back</span>
+                    </a>
+                    &ensp;
+                    <button class="btn btn-success btn-icon-split me-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span class="text">Update</span>
+                    </button>               
+                </div>
             </div>
         </div>
+
     </form>
 
 

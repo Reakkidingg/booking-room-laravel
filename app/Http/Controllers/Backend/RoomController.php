@@ -18,6 +18,7 @@ class RoomController extends Controller
             // ->where('room_status', '0')
             ->join('room_types', 'room_types.room_type_id', '=', 'rooms.room_type_id')
             ->select('rooms.*', 'room_types.room_type_name')
+            ->where('room_active', '1')
             ->orderBy('room_id', 'desc')
             ->paginate(config('app.row'));
         // ->get();
@@ -26,32 +27,33 @@ class RoomController extends Controller
 
     public function create()
     {
-        // $room_types = DB::table('room_types')->get();
+        $room_types = DB::table('room_types')->get();
 
-        $room_types = RoomType::all();
+        // $room_types = RoomType::all();
         return view('backend.room.create', compact('room_types'));
     }
 
     public function save(Request $rep)
     {
-        $rep->validate([
-            'room_name' => 'required|unique:rooms|max:191',
-            //'room_status' => 'required',
-            'room_desc' => 'required',
-            'room_type_id' => 'required',
-            'room_photo' => 'required'
-        ],
+        $rep->validate(
+            [
+                'room_name' => 'required|unique:rooms|max:191',
+                //'room_status' => 'required',
+                'room_desc' => 'required',
+                'room_type_id' => 'required',
+                'room_photo' => 'required'
+            ],
             [
                 'room_name.required' => 'Please input the field room name!',
                 'room_desc.required' => 'Please input the field room description!',
                 'room_type_id.required' => 'Please input the field room type ID!',
                 'room_photo.required' => 'Please select photo from your browse!',
             ]
-    );
+        );
 
-    if($rep->room_photo){
-        $data['room_photo'] = $rep->file('room_photo')->store('uploads/rooms/', 'custom');
-    }
+        if ($rep->room_photo) {
+            $data['room_photo'] = $rep->file('room_photo')->store('uploads/rooms/', 'custom');
+        }
         try {
             // Extracting data from the request
             $data = array(
@@ -74,16 +76,33 @@ class RoomController extends Controller
                 return redirect('/room')->with('success', 'Data has been inserted.');
             }
         } catch (QueryException $e) {
-            
+
             return back()->with('error', 'Insert data went wrong!');
         }
     }
 
     //Delete Function
-    public function delete($id){
+    public function delete($id)
+    {
         $i = DB::table('rooms')
-        ->where('room_id', $id)
-        ->delete();
+            ->where('room_id', $id)
+            // ->delete();
+            ->update(['room_active' => '0']);
         return redirect('room')->with('success', 'Data has been deleted.');
     }
+
+    //Update Function
+    public function edit($id)
+    {
+        $data['rooms'] = DB::table('rooms')
+            ->where('room_id', $id)
+            ->where('room_active', '1')
+            ->first();
+
+        $room_types = RoomType::all();
+        return view('backend.room.edit', $data, compact('room_types'));
+    }
+
+    
+
 }
