@@ -12,5 +12,7 @@ Route::controller(RoomController::class)->group(function(){
     Route::get('room/create', 'create');
     Route::get('room/edit/{id}', 'edit');
     Route::post('room/save', 'save');
+    Route::post('room/update', 'update');
     Route::get('room/delete/{id}', 'delete')->name('room.delete');
+    Route::get('room/search', 'search')->name('room.search');
 });

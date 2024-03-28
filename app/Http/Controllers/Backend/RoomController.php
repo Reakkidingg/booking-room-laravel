@@ -96,13 +96,42 @@ class RoomController extends Controller
     {
         $data['rooms'] = DB::table('rooms')
             ->where('room_id', $id)
-            ->where('room_active', '1')
             ->first();
 
         $room_types = RoomType::all();
         return view('backend.room.edit', $data, compact('room_types'));
     }
 
-    
 
+    // Update
+    public function update(Request $req)
+    {
+        // Exclude the unnecessary fields from the request data
+        $data = $req->except('_token', 'room_id', 'room_photo');
+
+        // Check if a new room photo has been uploaded
+        if ($req->room_photo) {
+            // Store the new room photo and update the data array
+            $data['room_photo'] = $req->file('room_photo')->store('uploads/rooms/', 'custom');
+        }
+
+        $existingRoom = DB::table('rooms')->where('room_name', $data['room_name'])->first();
+
+        if ($existingRoom) {
+            return back()->with('duplicate', 'The room name already exists. Please use a different name.');
+        }
+
+        // Update the room data in the database
+        $i = DB::table('rooms')
+            ->where('room_id', $req->room_id)
+            ->update($data);
+
+        if ($i) {
+            return redirect('room/edit/' . $req->room_id)
+                ->with('success', 'Data has been updated!');
+        } else {
+            return redirect('room/edit/' . $req->room_id)
+                ->with('error', 'Failed Data to updated!');
+        }
+    }
 }
