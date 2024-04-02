@@ -25,6 +25,26 @@ class RoomController extends Controller
         return view('backend.room.index', $data);
     }
 
+    //search
+    public function search(Request $req){
+        $q_search = $req->q_search;
+        $data['q_search'] = "";
+        $data['rooms'] = DB::table('rooms')
+            ->join('room_types', 'room_types.room_type_id', '=', 'rooms.room_type_id')
+            ->select('rooms.*', 'room_types.room_type_name')
+            // ->where('room_status', '1')
+            ->where(function($query) use($q_search){
+                $query = $query->orWhere('room_name', 'like', "%{$q_search}%")
+                               ->orWhere('room_desc', 'like', "%{$q_search}%");
+            })
+            
+            ->orderBy('room_id', 'desc')
+            ->paginate(config('app.row'));
+            
+            $data['q_search'] = $q_search;
+            return view('backend.room.index', $data);
+    }
+
     public function create()
     {
         $room_types = DB::table('room_types')->get();
@@ -102,7 +122,6 @@ class RoomController extends Controller
         return view('backend.room.edit', $data, compact('room_types'));
     }
 
-
     // Update
     public function update(Request $req)
     {
@@ -115,12 +134,11 @@ class RoomController extends Controller
             $data['room_photo'] = $req->file('room_photo')->store('uploads/rooms/', 'custom');
         }
 
-        $existingRoom = DB::table('rooms')->where('room_name', $data['room_name'])->first();
+        // $existingRoom = DB::table('rooms')->where('room_name', $data['room_name'])->first();
 
-        if ($existingRoom) {
-            return back()->with('duplicate', 'The room name already exists. Please use a different name.');
-        }
-
+        // if ($existingRoom) {
+        //     return back()->with('duplicate', 'The room name already exists. Please use a different name.');
+        // }
         // Update the room data in the database
         $i = DB::table('rooms')
             ->where('room_id', $req->room_id)

@@ -27,11 +27,11 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Room Lists</h6>
             <!-- Topbar Search -->
-            <form action="{{route('room.search')}}" class="form-inline">
+            <form action="{{route('room.search')}}" method="GET" autocomplete="off" class="form-inline">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-lg bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <input type="text" name="q_search" value="{{ $q_search ?? '' }}" class="form-control form-control-lg bg-light border-0 small" placeholder="Search for...">
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search fa-sm"></i>
                         </button>
                     </div>
@@ -83,6 +83,26 @@
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
+                                <!-- Modal Delete-->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Deletion Information</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-danger">
+                                                Are you sure for delete this record?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <a href="{{route('room.delete', $item->room_id)}}" class="btn btn-primary">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -95,27 +115,6 @@
     </div>
 </div>
 
-
-<!-- Modal Delete-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Deletion Information</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-danger">
-                Are you sure for delete this record?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a href="{{route('room.delete', $item->room_id)}}" class="btn btn-primary">Delete</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Edit-->
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
